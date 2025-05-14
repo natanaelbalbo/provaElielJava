@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rotas pu00fablicas
+// Rotas publicas
 app.use('/api/auth', authRoutes);
 
 // Rotas protegidas
