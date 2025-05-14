@@ -2,38 +2,48 @@ import { Router } from 'express'
 import usuarioController from './controllers/usuarioController'
 import tarefaController from './controllers/tarefaController'
 import categoriaController from './controllers/categoriaController'
+import { authMiddleware } from './middlewares/authMiddleware'
+import authRoutes from './routes/auth.routes'
+import taskRoutes from './routes/task.routes'
 
 const routes = Router()
 
-routes.post('/usuario', usuarioController.create)
-routes.get('/usuarios', usuarioController.findAll)
-routes.get('/usuario/:id', usuarioController.findById)
-routes.put('/usuario/:id', usuarioController.update)
-routes.delete('/usuario/:id', usuarioController.delete)
+// Rotas de autenticação (públicas)
+routes.use('/api/auth', authRoutes);
 
-routes.post('/tarefa', tarefaController.create)
-routes.get('/tarefas', tarefaController.findAll)
-routes.get('/tarefa/:id', tarefaController.findById)
-routes.put('/tarefa/:id', tarefaController.update)
-routes.delete('/tarefa/:id', tarefaController.delete)
+// Rotas de tarefas do frontend (protegidas)
+routes.use('/api/tasks', authMiddleware, taskRoutes);
 
-routes.post('/categoria', categoriaController.create)
-routes.get('/categorias', categoriaController.findAll)
-routes.get('/categorias/:id', categoriaController.findById)
-routes.put('/categorias/:id', categoriaController.update)
-routes.delete('/categorias/:id', categoriaController.delete)
+// Outras rotas da API
+routes.post('/api/usuario', usuarioController.create)
+routes.get('/api/usuarios', usuarioController.findAll)
+routes.get('/api/usuario/:id', usuarioController.findById)
+routes.put('/api/usuario/:id', usuarioController.update)
+routes.delete('/api/usuario/:id', usuarioController.delete)
+
+routes.post('/api/tarefa', tarefaController.create)
+routes.get('/api/tarefas', tarefaController.findAll)
+routes.get('/api/tarefa/:id', tarefaController.findById)
+routes.put('/api/tarefa/:id', tarefaController.update)
+routes.delete('/api/tarefa/:id', tarefaController.delete)
+
+routes.post('/api/categoria', categoriaController.create)
+routes.get('/api/categorias', categoriaController.findAll)
+routes.get('/api/categorias/:id', categoriaController.findById)
+routes.put('/api/categorias/:id', categoriaController.update)
+routes.delete('/api/categorias/:id', categoriaController.delete)
 
 //listar tarefas concluídas ou pendentes
-routes.get('/tarefas/status/:status', tarefaController.statusTarefa)
+routes.get('/api/tarefas/status/:status', tarefaController.statusTarefa)
 //Rota para contar o número total de tarefas de um usuário.
-routes.get('/tarefas/usuarios/:usuarioAssociado', tarefaController.countUsuariosTarefas)
+routes.get('/api/tarefas/usuarios/:usuarioAssociado', tarefaController.countUsuariosTarefas)
 //Rota para listar tarefas que vencem em um determinado período.
-routes.get('/tarefas/dataconclusao/:dataConclusao', tarefaController.findDataTarefa);
-routes.get('/tarefas/tarefa-mais-recente/:usuarioAssociado', tarefaController.tarefaMaisRecente );
-routes.get('/tarefas/media-conclusao', tarefaController.mediaTarefasConcluidas );
-routes.get('/tarefas/descricao-mais-longa', tarefaController.tarefaDescricaoMaisLonga);
-routes.get('/tarefas/agrupar-por-categoria', tarefaController.agruparPorCategoria);
-routes.get('/tarefas/mais-antiga/:usuario', tarefaController.findTarefaMaisAntiga);
+routes.get('/api/tarefas/dataconclusao/:dataConclusao', tarefaController.findDataTarefa);
+routes.get('/api/tarefas/tarefa-mais-recente/:usuarioAssociado', tarefaController.tarefaMaisRecente );
+routes.get('/api/tarefas/media-conclusao', tarefaController.mediaTarefasConcluidas );
+routes.get('/api/tarefas/descricao-mais-longa', tarefaController.tarefaDescricaoMaisLonga);
+routes.get('/api/tarefas/agrupar-por-categoria', tarefaController.agruparPorCategoria);
+routes.get('/api/tarefas/mais-antiga/:usuario', tarefaController.findTarefaMaisAntiga);
 
 
 export {

@@ -1,50 +1,71 @@
-import { Task, TaskStatus } from '../models/Task';
-import { v4 as uuidv4 } from 'uuid';
-
-interface TaskStorage {
-    [key: string]: Task;
-}
+import Task, { TaskStatus } from '../models/Task';
 
 export class TaskService {
-    private tasks: TaskStorage = {};
-
-    create(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Task {
-        const newTask: Task = {
-            ...task,
-            id: uuidv4(),
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-        if (newTask.id) {
-            this.tasks[newTask.id] = newTask;
+    async create(task: { title: string, description: string, status: TaskStatus, userId: string }): Promise<any> {
+        try {
+            const newTask = await Task.create(task);
+            return newTask.toJSON();
+        } catch (error) {
+            console.error('Erro ao criar tarefa:', error);
+            throw error;
         }
-        return newTask;
     }
 
-    getAll(): Task[] {
-        return Object.values(this.tasks);
+    async getAll(userId: string): Promise<any[]> {
+        try {
+            const tasks = await Task.findAll({ 
+                where: { userId },
+                order: [['createdAt', 'DESC']]
+            });
+            return tasks.map(task => task.toJSON());
+        } catch (error) {
+            console.error('Erro ao listar tarefas:', error);
+            throw error;
+        }
     }
 
-    updateStatus(id: string, status: TaskStatus): Task | null {
-        const task = this.tasks[id];
-        if (!task) return null;
-
-        const updatedTask: Task = {
-            ...task,
-            status,
-            updatedAt: new Date()
-        };
-        this.tasks[id] = updatedTask;
-        return updatedTask;
+    async updateStatus(id: string, status: TaskStatus, userId: string): Promise<any | null> {
+        try {
+            const task = await Task.findOne({ 
+                where: { id, userId }
+            });
+            
+            if (!task) return null;
+            
+            task.set('status', status);
+            task.set('updatedAt', new Date());
+            
+            await task.save();
+            return task.toJSON();
+        } catch (error) {
+            console.error('Erro ao atualizar status da tarefa:', error);
+            throw error;
+        }
     }
 
-    delete(id: string): boolean {
-        if (!this.tasks[id]) return false;
-        delete this.tasks[id];
-        return true;
+    async delete(id: string, userId: string): Promise<boolean> {
+        try {
+            const deleted = await Task.destroy({ 
+                where: { id, userId }
+            });
+            
+            return deleted > 0;
+        } catch (error) {
+            console.error('Erro ao deletar tarefa:', error);
+            throw error;
+        }
     }
 
-    getById(id: string): Task | null {
-        return this.tasks[id] || null;
+    async getById(id: string, userId: string): Promise<any | null> {
+        try {
+            const task = await Task.findOne({
+                where: { id, userId }
+            });
+            
+            return task ? task.toJSON() : null;
+        } catch (error) {
+            console.error('Erro ao buscar tarefa por ID:', error);
+            throw error;
+        }
     }
 }
