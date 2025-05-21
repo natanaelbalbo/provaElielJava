@@ -21,7 +21,7 @@ API de gerenciamento de tarefas desenvolvida com Node.js, TypeScript e Express. 
 2. Instale as dependências: `npm install`
 3. Inicie o servidor: `npm start`
 
-O servidor estará rodando em `http://localhost:3002`.
+O servidor estará rodando em `http://localhost:3005`.
 
 ## Endpoints
 

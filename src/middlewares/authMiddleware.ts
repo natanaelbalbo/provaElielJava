@@ -13,10 +13,10 @@ declare global {
 }
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-    // Verificar se existe o header de autorizau00e7u00e3o
+    // Verificar se existe o header de autoriazação
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-        return res.status(401).json({ error: 'Token nu00e3o fornecido' });
+        return res.status(401).json({ error: 'Token não fornecido' });
     }
 
     // Verificar formato do token (Bearer <token>)
