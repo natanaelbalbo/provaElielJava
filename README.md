@@ -210,3 +210,25 @@ curl -X PUT http://localhost:3002/api/tasks/ID_DA_TAREFA/status \
 curl -X DELETE http://localhost:3002/api/tasks/ID_DA_TAREFA \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
+
+## Testes Automatizados
+
+O projeto possui testes unitários para as principais regras de negócio dos serviços de tarefas, usuários e categorias, utilizando Jest.
+
+### Como rodar os testes
+
+1. Instale as dependências (caso ainda não tenha feito):
+   ```bash
+   npm install
+   ```
+2. Execute os testes:
+   ```bash
+   npm test
+   ```
+
+Os testes cobrem:
+- Criação, listagem, busca, atualização e remoção de tarefas
+- Registro e listagem de usuários
+- Criação e listagem de categorias
+
+Os testes utilizam mocks do Mongoose, não sendo necessário um banco de dados real para rodá-los.

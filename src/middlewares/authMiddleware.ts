@@ -34,10 +34,10 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     const authService = new AuthService();
     const decoded = authService.validateToken(token);
     if (!decoded) {
-        return res.status(401).json({ error: 'Token invu00e1lido' });
+        return res.status(401).json({ error: 'Token inválido' });
     }
 
-    // Adicionar informau00e7u00f5es do usuu00e1rio u00e0 requisiu00e7u00e3o
+    // Adicionar informações do usuário à requisição
     req.user = decoded;
     
     return next();

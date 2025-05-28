@@ -11,7 +11,7 @@ const routes = Router()
 // Rotas de autenticação (públicas)
 routes.use('/api/auth', authRoutes);
 
-// Rotas de tarefas do frontend (protegidas)
+// Rotas de tarefas (protegidas)
 routes.use('/api/tasks', authMiddleware, taskRoutes);
 
 // Outras rotas da API
