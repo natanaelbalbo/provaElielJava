@@ -1,27 +1,80 @@
-# API de Gerenciamento de Tarefas
+# Clever Task Manager - Sistema Completo
 
-API de gerenciamento de tarefas desenvolvida com Node.js, TypeScript e Express. Permite o cadastro, listagem, atualização e remoção de tarefas, além de autenticação via JWT.
+Um sistema completo de gerenciamento de tarefas desenvolvido com:
+- **Backend**: Node.js, TypeScript, Express e SQLite 
+- **Frontend**: React, TypeScript, Vite e Shadcn/UI
+
+O sistema permite cadastro de usuários, autenticação segura via JWT, e gerenciamento completo de tarefas (criação, listagem, atualização de status e remoção).
+
+## Arquitetura do Sistema
+
+O sistema segue uma arquitetura cliente-servidor:
+
+### Backend
+- **Express**: Framework web para Node.js
+- **TypeScript**: Linguagem de programação tipada
+- **Sequelize**: ORM para comunicação com o banco de dados SQLite
+- **JWT**: Para autenticação e autorização de usuários
+- **Arquitetura em Camadas**: Controllers, Services, Models e Middlewares
+
+### Frontend
+- **React**: Biblioteca para construção de interfaces
+- **TypeScript**: Para tipagem estática
+- **Vite**: Como bundler e ferramenta de desenvolvimento
+- **Shadcn/UI**: Para componentes de interface prontos e estéticos
+- **Fetch API**: Para comunicação com o backend
 
 ## Funcionalidades
 
-- Cadastrar tarefas
-- Listar todas as tarefas
-- Atualizar o status de uma tarefa
-- Remover uma tarefa
-- Autenticação de usuários usando JWT
+- Cadastro e login de usuários
+- Gerenciamento de tarefas:
+  - Criação de novas tarefas
+  - Listagem de todas as tarefas do usuário
+  - Atualização do status (TODO, IN_PROGRESS, DONE)
+  - Remoção de tarefas
 
 ## Requisitos
 
 - Node.js (v16+)
-- NPM
+- NPM ou Yarn
 
-## Como rodar a aplicação localmente
+## Como rodar o sistema completo
 
-1. Clone o repositório
-2. Instale as dependências: `npm install`
-3. Inicie o servidor: `npm start`
+### Backend
 
-O servidor estará rodando em `http://localhost:3005`.
+1. Navegue até a pasta raiz do projeto
+   ```bash
+   cd provaElielJava
+   ```
+
+2. Instale as dependências
+   ```bash
+   npm install
+   ```
+
+3. Inicie o servidor backend
+   ```bash
+   npm run start
+   ```
+   O servidor estará rodando em `http://localhost:3005`
+
+### Frontend
+
+1. Navegue até a pasta do frontend
+   ```bash
+   cd clever-task-manager-front-main
+   ```
+
+2. Instale as dependências
+   ```bash
+   npm install
+   ```
+
+3. Inicie o servidor de desenvolvimento
+   ```bash
+   npm run dev
+   ```
+   O frontend estará acessível em `http://localhost:8080`
 
 ## Endpoints
 
@@ -159,12 +212,70 @@ Authorization: Bearer <seu_token>
 
 Resposta de sucesso (204 No Content)
 
+## Integração entre Frontend e Backend
+
+A integração entre o frontend e o backend é realizada através de requisições HTTP, utilizando a Fetch API no frontend para comunicação com a API REST do backend.
+
+### Configuração CORS
+
+O backend está configurado para aceitar requisições do frontend através da configuração CORS:
+
+```typescript
+this.express.use(cors({
+    origin: 'http://localhost:8080', // URL do frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}))
+```
+
+### Autenticação
+
+Toda a comunicação entre frontend e backend que requer autenticação utiliza tokens JWT:
+
+1. O usuário se autentica através da rota `/api/auth/login`
+2. O backend gera um token JWT
+3. O frontend armazena o token no localStorage
+4. Requisições subsequentes incluem o token no header `Authorization: Bearer <token>`
+
+## Estrutura de Diretórios
+
+### Backend
+
+```
+src/
+├── controllers/      # Controladores que recebem requisições e retornam respostas
+├── middlewares/      # Middlewares para processar requisições (ex: autenticação)
+├── models/           # Definições de modelos do banco de dados
+├── routes/           # Definição das rotas da API
+├── services/         # Lógica de negócios
+├── schema/           # Esquemas de validação
+├── types/            # Definições de tipos TypeScript
+├── app.ts            # Configuração da aplicação Express
+├── database.ts       # Configuração da conexão com o banco de dados
+├── routes.ts         # Registro central de rotas
+└── server.ts         # Ponto de entrada da aplicação
+```
+
+### Frontend
+
+```
+src/
+├── components/       # Componentes React reutilizáveis
+├── contexts/         # Contextos React para gerenciamento de estado
+├── hooks/            # Hooks personalizados
+├── lib/              # Bibliotecas e utilitários
+├── pages/            # Componentes de página
+├── services/         # Serviços para comunicação com API
+├── App.tsx           # Componente raiz da aplicação
+└── main.tsx          # Ponto de entrada
+```
+
 ## Exemplo de uso com curl
 
 ### 1. Registrar usuário
 
 ```bash
-curl -X POST http://localhost:3002/api/auth/register \
+curl -X POST http://localhost:3005/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"username": "usuario", "password": "senha123"}'
 ```
@@ -172,7 +283,7 @@ curl -X POST http://localhost:3002/api/auth/register \
 ### 2. Login
 
 ```bash
-curl -X POST http://localhost:3002/api/auth/login \
+curl -X POST http://localhost:3005/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username": "usuario", "password": "senha123"}'
 ```
@@ -182,7 +293,7 @@ Guarde o token retornado para usar nas próximas requisições.
 ### 3. Criar uma tarefa
 
 ```bash
-curl -X POST http://localhost:3002/api/tasks \
+curl -X POST http://localhost:3005/api/tasks \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{"title": "Estudar TypeScript", "description": "Aprender os conceitos básicos", "status": "TODO"}'
@@ -191,14 +302,14 @@ curl -X POST http://localhost:3002/api/tasks \
 ### 4. Listar tarefas
 
 ```bash
-curl -X GET http://localhost:3002/api/tasks \
+curl -X GET http://localhost:3005/api/tasks \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
 ### 5. Atualizar status da tarefa
 
 ```bash
-curl -X PUT http://localhost:3002/api/tasks/ID_DA_TAREFA/status \
+curl -X PUT http://localhost:3005/api/tasks/ID_DA_TAREFA/status \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{"status": "IN_PROGRESS"}'
@@ -207,7 +318,7 @@ curl -X PUT http://localhost:3002/api/tasks/ID_DA_TAREFA/status \
 ### 6. Remover uma tarefa
 
 ```bash
-curl -X DELETE http://localhost:3002/api/tasks/ID_DA_TAREFA \
+curl -X DELETE http://localhost:3005/api/tasks/ID_DA_TAREFA \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
@@ -231,4 +342,4 @@ Os testes cobrem:
 - Registro e listagem de usuários
 - Criação e listagem de categorias
 
-Os testes utilizam mocks do Mongoose, não sendo necessário um banco de dados real para rodá-los.
+Os testes utilizam mocks do Sequelize, não sendo necessário um banco de dados real para rodá-los.
