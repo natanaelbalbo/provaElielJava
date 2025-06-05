@@ -14,7 +14,11 @@ class App {
     }
 
     public middleware() {
-        this.express.use(cors())
+        this.express.use(cors({
+            origin: 'http://localhost:8080', // URL do frontend (porta atual do Vite)
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }))
         this.express.use(express.json())
     }
 
